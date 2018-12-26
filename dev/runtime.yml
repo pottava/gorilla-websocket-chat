@@ -5,9 +5,26 @@ services:
   ws:
     image: golang:1.11.4-alpine3.8
     command: go run main.go
-    ports:
-      - 9000:8080
     volumes:
       - ..:/go/src/github.com/pottava/gorilla-websocket-chat
     working_dir: /go/src/github.com/pottava/gorilla-websocket-chat/server
+    restart: always
     container_name: ws
+
+  html:
+    image: nginx:1.15.7-alpine
+    volumes:
+      - ../client:/usr/share/nginx/html
+    logging:
+      driver: "none"
+    restart: always
+    container_name: html
+
+  proxy:
+    image: pottava/proxy:1.1
+    ports:
+      - 9000:80
+    environment:
+      - PROXY_PATTERNS="/ws=http://ws:8080/,*=http://html/"
+      - HEALTHCHECK_PATH=/health
+    container_name: proxy
