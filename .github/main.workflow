@@ -3,6 +3,11 @@ workflow "Test & build" {
   resolves = ["TestResult"]
 }
 
+workflow "Release a new version" {
+  on = "release"
+  resolves = ["ReleaseResult"]
+}
+
 action "Branch" {
   uses = "actions/bin/filter@master"
   args = "branch"
@@ -41,5 +46,33 @@ action "Build" {
 
 action "TestResult" {
   needs = ["Lint", "Test", "Build"]
+  uses = "actions/bin/debug@master"
+}
+
+action "Tags" {
+  uses = "actions/bin/filter@master"
+  args = "tag v*"
+}
+
+action "ReleaseBuild" {
+  needs = ["Deps"]
+  uses = "supinf/github-actions/go/build@master"
+  env = {
+    SRC_DIR = "server/"
+    BUILD_OPTIONS = "-X main.version=${version}-${GITHUB_SHA:0:7} -X main.date=$(date +%Y-%m-%d --utc)"
+  }
+}
+
+action "Release" {
+  needs = ["Tags", "ReleaseBuild"]
+  uses = "supinf/github-actions/github/release@master"
+  env = {
+    ARTIFACT_DIR = "server/dist/"
+  }
+  secrets = ["GITHUB_TOKEN"]
+}
+
+action "ReleaseResult" {
+  needs = ["Release"]
   uses = "actions/bin/debug@master"
 }
