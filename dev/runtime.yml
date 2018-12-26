@@ -1,0 +1,13 @@
+version: "2"
+
+services:
+  # docker-compose -f dev/runtime.yml up
+  ws:
+    image: golang:1.11.4-alpine3.8
+    command: go run main.go
+    ports:
+      - 9000:8080
+    volumes:
+      - ..:/go/src/github.com/pottava/gorilla-websocket-chat
+    working_dir: /go/src/github.com/pottava/gorilla-websocket-chat/server
+    container_name: ws

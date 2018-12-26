@@ -1,0 +1,26 @@
+version: "2.1"
+
+services:
+  # docker-compose -f dev/tools.yml run --rm deps
+  deps:
+    image: supinf/go-dep:0.5
+    command: init
+    volumes:
+      - ..:/go/src/github.com/pottava/gorilla-websocket-chat
+    working_dir: /go/src/github.com/pottava/gorilla-websocket-chat/server
+
+  # docker-compose -f dev/tools.yml run --rm lint
+  lint:
+    image: supinf/golangci-lint:1.12
+    command: run --config .golangci.yml
+    volumes:
+      - ..:/go/src/github.com/pottava/gorilla-websocket-chat
+    working_dir: /go/src/github.com/pottava/gorilla-websocket-chat/server
+
+  # BUILD_VERSION=v0.1.0 BUILD_DATE=`date +%FT%T%z` docker-compose -f dev/tools.yml run --rm build
+  build:
+    image: pottava/gox:go1.11
+    command: --osarch "linux/amd64 darwin/amd64 windows/amd64" -ldflags "-X main.version=${BUILD_VERSION} -X main.date=${BUILD_DATE}" -output "dist/{{.OS}}_{{.Arch}}"
+    volumes:
+      - ..:/go/src/github.com/pottava/gorilla-websocket-chat
+    working_dir: /go/src/github.com/pottava/gorilla-websocket-chat/server
