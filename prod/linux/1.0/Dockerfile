@@ -7,7 +7,7 @@ RUN go install github.com/golang/dep/...
 WORKDIR /go/src/github.com/pottava
 RUN git clone https://github.com/pottava/gorilla-websocket-chat.git
 WORKDIR /go/src/github.com/pottava/gorilla-websocket-chat
-RUN git checkout v1.0.1 > /dev/null 2>&1
+RUN git checkout v1.0.2 > /dev/null 2>&1
 WORKDIR /go/src/github.com/pottava/gorilla-websocket-chat/server
 RUN dep ensure
 RUN go build -a -installsuffix cgo -ldflags "-s -w"
