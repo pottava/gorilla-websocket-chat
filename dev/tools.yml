@@ -4,7 +4,7 @@ services:
   # docker-compose -f dev/tools.yml run --rm deps
   deps:
     image: supinf/go-dep:0.5
-    command: init
+    command: ensure
     volumes:
       - ..:/go/src/github.com/pottava/gorilla-websocket-chat
     working_dir: /go/src/github.com/pottava/gorilla-websocket-chat/server
