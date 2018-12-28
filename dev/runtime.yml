@@ -6,7 +6,10 @@ services:
     image: golang:1.11.4-alpine3.8
     command: go run main.go
     ports:
-      - 9000:8080
+      - 9000:9000
+    environment:
+      - WS_PORT=9000
+      - WS_PREFIX=/foo/
     volumes:
       - ..:/go/src/github.com/pottava/gorilla-websocket-chat
     working_dir: /go/src/github.com/pottava/gorilla-websocket-chat/server

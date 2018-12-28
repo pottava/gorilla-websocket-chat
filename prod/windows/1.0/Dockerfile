@@ -1,3 +1,3 @@
 FROM mcr.microsoft.com/windows/nanoserver:10.0.14393.2485
-ADD https://github.com/pottava/gorilla-websocket-chat/releases/download/v1.0.0/windows_amd64.exe server.exe
+ADD https://github.com/pottava/gorilla-websocket-chat/releases/download/v1.0.1/windows_amd64.exe server.exe
 ENTRYPOINT ["C:\\server.exe"]
