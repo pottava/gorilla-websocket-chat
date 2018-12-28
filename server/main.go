@@ -65,7 +65,7 @@ func main() {
 			}
 		}
 	}()
-	http.HandleFunc(fmt.Sprintf("%sws", config.Prefix), func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(fmt.Sprintf("%sws", c.Prefix), func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			logger.Println(err)
@@ -81,7 +81,7 @@ func main() {
 		go client.write()
 		go client.read()
 	})
-	http.HandleFunc("/", index)
+	http.HandleFunc("/", index(c.Prefix))
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
@@ -92,8 +92,8 @@ func main() {
 			w.WriteHeader(http.StatusOK)
 		}
 	})
-	logger.Printf("[service] listening on port %d", config.Port)
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", config.Port), nil); err != nil {
+	logger.Printf("[service] listening on port %d", c.Port)
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", c.Port), nil); err != nil {
 		errors.Fatal(err)
 	}
 }
@@ -214,7 +214,7 @@ var html = `
             return false;
         };
         if (window["WebSocket"]) {
-            conn = new WebSocket("ws://" + document.location.host + "/ws");
+            conn = new WebSocket("ws://" + document.location.host + "%sws");
             conn.onclose = function (evt) {
                 var item = document.createElement("div");
                 item.innerHTML = "<b>Connection closed.</b>";
@@ -243,8 +243,8 @@ var html = `
         overflow: hidden;
         padding: 0;
         margin: 0;
-        width: 100%;
-        height: 100%;
+        width: 100%%;
+        height: 100%%;
         background: gray;
     }
     #log {
@@ -279,6 +279,8 @@ var html = `
 </html>
 `
 
-func index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, html)
+func index(prefix string) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, fmt.Sprintf(html, prefix))
+	}
 }
