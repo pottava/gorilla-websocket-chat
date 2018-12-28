@@ -81,16 +81,21 @@ func main() {
 		go client.write()
 		go client.read()
 	})
-	http.HandleFunc("/", index(c.Prefix))
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
-	http.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(c.Prefix, index(c.Prefix))
+	if c.Prefix != "/" {
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusForbidden)
+		})
+	}
+	http.HandleFunc(fmt.Sprintf("%sversion", c.Prefix), func(w http.ResponseWriter, r *http.Request) {
 		if len(version) > 0 && len(date) > 0 {
 			fmt.Fprintf(w, "version: %s (built at %s)", version, date)
 		} else {
 			w.WriteHeader(http.StatusOK)
 		}
+	})
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
 	})
 	logger.Printf("[service] listening on port %d", c.Port)
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", c.Port), nil); err != nil {
