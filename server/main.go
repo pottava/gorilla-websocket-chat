@@ -9,6 +9,7 @@ import (
 	"time"
 
 	ws "github.com/gorilla/websocket"
+	"github.com/kelseyhightower/envconfig"
 )
 
 var (
@@ -26,7 +27,16 @@ var upgrader = ws.Upgrader{
 	},
 }
 
+type config struct {
+	Port   int64  `default:"8080"`
+	Prefix string `default:"/"`
+}
+
 func main() {
+	var c config
+	if err := envconfig.Process("ws", &c); err != nil {
+		errors.Fatal(err)
+	}
 	mngr := manager{
 		clients:   make(map[*client]bool),
 		add:       make(chan *client),
@@ -55,7 +65,7 @@ func main() {
 			}
 		}
 	}()
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc(fmt.Sprintf("%sws", config.Prefix), func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
 			logger.Println(err)
@@ -82,8 +92,8 @@ func main() {
 			w.WriteHeader(http.StatusOK)
 		}
 	})
-	logger.Printf("[service] listening on port %d", 8080)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	logger.Printf("[service] listening on port %d", config.Port)
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", config.Port), nil); err != nil {
 		errors.Fatal(err)
 	}
 }
