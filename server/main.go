@@ -189,10 +189,10 @@ func (c *client) write() {
 	}
 }
 
-var html = `
-<!DOCTYPE html>
+var html = `<!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Chat Example</title>
     <script type="text/javascript">
     window.onload = function () {
@@ -272,17 +272,17 @@ var html = `
         width: 100%;
         overflow: hidden;
     }
-    </style>
-    </head>
+	</style>
+	<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+</head>
 <body>
     <div id="log"></div>
     <form id="form">
         <input type="submit" value="Send" />
-        <input type="text" id="msg" size="64"/>
+        <input type="text" id="msg" size="64" />
     </form>
 </body>
-</html>
-`
+</html>`
 
 func index(prefix string) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
