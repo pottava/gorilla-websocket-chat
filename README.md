@@ -5,7 +5,8 @@
 Supported tags and respective `Dockerfile` links:  
 ・latest ([prod/linux/1.0/Dockerfile](https://github.com/pottava/gorilla-websocket-chat/blob/master/prod/linux/1.0/Dockerfile))  
 ・1.0 ([prod/linux/1.0/Dockerfile](https://github.com/pottava/gorilla-websocket-chat/blob/master/prod/linux/1.0/Dockerfile))  
-・1.0-win ([prod/windows/1.0/Dockerfile](https://github.com/pottava/gorilla-websocket-chat/blob/master/prod/windows/1.0/Dockerfile))  
+・1.0-win ([prod/windows/1.0/Dockerfile](https://github.com/pottava/gorilla-websocket-chat/blob/master/prod/windows/1.0-2016/Dockerfile))  
+・1.0-win2019 ([prod/windows/1.0/Dockerfile](https://github.com/pottava/gorilla-websocket-chat/blob/master/prod/windows/1.0-2019/Dockerfile))  
 
 ## Usage
 
